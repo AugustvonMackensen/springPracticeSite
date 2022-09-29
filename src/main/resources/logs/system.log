@@ -912,3 +912,15 @@ Caused by: Error : 1747, Position : 53, Sql = update member
 [16:01:19][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/ntop3.do
 [16:02:06][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/ntop3.do
 [16:02:06][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/btop3.do
+[17:49:36][INFO ][ContextLoader.java:271] - Root WebApplicationContext: initialization started
+[17:49:37][INFO ][ContextLoader.java:307] - Root WebApplicationContext initialized in 1574 ms
+[17:49:37][INFO ][FrameworkServlet.java:525] - Initializing Servlet 'appServlet'
+[17:49:39][INFO ][FrameworkServlet.java:547] - Completed initialization in 1729 ms
+[17:49:44][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/ntop3.do
+[17:49:44][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/btop3.do
+[17:49:54][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/ntop3.do
+[17:49:54][WARN ][DispatcherServlet.java:1278] - No mapping for POST /meinsite/btop3.do
+[17:50:09][INFO ][ContextLoader.java:271] - Root WebApplicationContext: initialization started
+[17:50:11][INFO ][ContextLoader.java:307] - Root WebApplicationContext initialized in 1289 ms
+[17:50:11][INFO ][FrameworkServlet.java:525] - Initializing Servlet 'appServlet'
+[17:50:12][INFO ][FrameworkServlet.java:547] - Completed initialization in 1644 ms
