@@ -8,8 +8,8 @@ public interface MemberService {
 	int selectDupcheckId(String userid);
 	int insertMember(Member member);
 	int findPwd(Member member);
-	Member selectFindId(String email);
-	Member pwdSelectId(Member member);
+	Member selectByid(String userid);
+	Member selectByMail(String email);
 	int updateMember(Member member);
 	int deleteMember(String userid);
 

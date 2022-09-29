@@ -174,7 +174,7 @@ public class MemberController {
 	//아이디 찾기
 	@RequestMapping("idRecovery.do")
 	public ModelAndView idRecovery(@RequestParam("email") String email, ModelAndView mv) {
-		Member loginMember = memberService.selectFindId(email);
+		Member loginMember = memberService.selectByMail(email);
 		
 		if(loginMember != null) {
 			mv.addObject("find_id", loginMember.getUserid());
@@ -189,7 +189,10 @@ public class MemberController {
 	}
 	
 	//비밀번호 찾기 : 임시비밀번호 발급
-	
+	@PostMapping("findPwd.do")
+	public String passRecovery(Member member, Model model) {
+		return "";
+	}
 	
 	//회원 정보 보기
 	//리턴 타입으로 String, ModelAndView를 사용할 수 있음

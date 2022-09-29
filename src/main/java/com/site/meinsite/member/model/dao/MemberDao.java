@@ -21,11 +21,11 @@ public class MemberDao {
 	public int insertMember(Member member) {
 		return session.insert("memberMapper.insertMember", member);
 	}
-	public Member selectFindId(String email) {
-		return session.selectOne("memberMapper.selectFindId", email);
+	public Member selectByMail(String email) {
+		return session.selectOne("memberMapper.selectByMail", email);
 	}
-	public Member pwdSelectId(Member member) {
-		return session.selectOne("memberMapper.pwdSelectId", member);
+	public Member selectByid(String userid) {
+		return session.selectOne("memberMapper.selectByid", userid);
 	}
 	public int findPwd(Member member) {
 		return session.update("memberMapper.findPwd", member);

@@ -35,16 +35,16 @@
 		where userid= #{ uid }
 	</select>
 	
-	<!-- 아이디 찾기 -->
-	<select id="selectFindId" parameterType="string" resultType="Member">
+	<!-- 이메일로 회원조회 -->
+	<select id="selectByMail" parameterType="string" resultType="Member">
 		select * from member
 		where email = #{ umail }
 	</select>
 	
-	<!-- 비밀번호 분실 : 임시 비밀번호 발송을 위한 회원 조회 -->
-	<select id="pwdSelectId" parameterType="Member" resultType="Member">
+	<!-- 아이디로 회원조회 -->
+	<select id="selectByid" parameterType="string" resultType="Member">
 		select * from member
-		where userid = #{ userid } and email = #{ email }
+		where userid = #{ uid }
 	</select>
 	
 	<!-- 비밀번호 분실 : 임시비밀번호 발급 -->

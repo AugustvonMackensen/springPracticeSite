@@ -27,16 +27,6 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public Member selectFindId(String email) {
-		return memberDao.selectFindId(email);
-	}
-
-	@Override
-	public Member pwdSelectId(Member member) {
-		return memberDao.pwdSelectId(member);
-	}
-
-	@Override
 	public int findPwd(Member member) {
 		return memberDao.findPwd(member);
 	}
@@ -49,5 +39,17 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int deleteMember(String userid) {
 		return memberDao.deleteMember(userid);
+	}
+
+	@Override
+	public Member selectByid(String userid) {
+		// TODO Auto-generated method stub
+		return memberDao.selectByid(userid);
+	}
+
+	@Override
+	public Member selectByMail(String email) {
+		// TODO Auto-generated method stub
+		return memberDao.selectByMail(email);
 	}
 }
