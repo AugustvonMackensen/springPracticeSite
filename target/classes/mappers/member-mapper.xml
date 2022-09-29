@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	<!-- select 한 결과집합 ResultSet 에서 한 행씩 꺼내서
+	각 컬럼값들을 vo 객체의 각 필드에 저장 처리하는 작업
+	: 결과 매핑
+	리스트나 맵에 여러 객체를 저장 처리도 포함됨 -->
+	<resultMap type="Member" id="resultList">
+		<result property="userid" column="userid" />
+		<result property="userpwd" column="userpwd" />
+		<result property="username" column="username" />
+		<result property="email" column="email" />
+		<result property="loginok" column="loginok" />
+		<result property="admin" column="admin" />
+		<result property="enroll_date" column="enroll_date" />
+	</resultMap>
+
+	<select id="selectLogin" parameterType="Member" resultType="Member">
+		select * from member
+		where userid = #{ userid } and userpwd = #{ userpwd }
+		and loginok = 'Y'
+	</select>
+	
+	<!-- 회원 아이디(userid)로 회원정보 조회 -->
+	<select id="selectMember" parameterType="string" resultType="Member">
+		select * from member
+		where userid = #{ uid } 
+	</select>
+	
+	<!-- 회원가입시  아이디 중복 체크 처리용 -->
+	<select id="selectCheckId" parameterType="string" resultType="_int">
+		select count(userid) from member
+		where userid= #{ uid }
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="selectFindId" parameterType="string" resultType="Member">
+		select * from member
+		where email = #{ umail }
+	</select>
+	
+	<!-- 비밀번호 분실 : 임시 비밀번호 발송을 위한 회원 조회 -->
+	<select id="pwdSelectId" parameterType="Member" resultType="Member">
+		select * from member
+		where userid = #{ userid } and email = #{ email }
+	</select>
+	
+	<!-- 비밀번호 분실 : 임시비밀번호 발급 -->
+	<update id="findPwd" parameterType="Member">
+		update member
+		set userpwd = ${ userpwd }
+		where userid = #{ userid } and email = #{ email }
+	</update>
+	
+	<!-- 회원 전체 조회용 -->
+	<select id="selectList" resultMap="resultList">
+		select * from member
+	</select>
+	
+	<!-- loginok 값 변경용 -->
+	<update id="updateLoginOK" parameterType="Member">
+		update member
+		set loginok = #{ loginok }
+		where userid = #{ userid }
+	</update>
+	
+	<insert id="insertMember" parameterType="Member">
+		insert into member (userid, userpwd, username, email, loginok, admin, enroll_date)
+		values (#{ userid }, #{ userpwd }, #{ username }, #{ email }, default, default, default)
+	</insert>
+	
+	<update id="updateMember" parameterType="Member">
+		update member
+		set userpwd = #{ userpwd },
+			email = #{ email }
+		where userid = #{ userid } 
+	</update>
+	
+	<delete id="deleteMember" parameterType="string">
+		delete from member
+		where userid = #{ uid }
+	</delete>
+	
+	<!-- 회원 검색 처리용 쿼리문 -->
+	<select id="selectSearchUserid" parameterType="string" resultMap="resultList">
+		select * from member
+		where userid like '%' || #{ keyword } || '%'
+	</select>
+	
+
+	<select id="selectSearchEnrollDate" parameterType="SearchDate" resultMap="resultList">
+		select * from member
+		where enroll_date between #{ begin } and #{ end }
+	</select>
+	
+	<select id="selectSearchLoginOK" parameterType="string" resultMap="resultList">
+		select * from member
+		where loginok = #{ keyword }
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="1" />
+	</beans:bean>
+	
+	<!-- 컨트롤러가 리턴한 json 객체 출력용 뷰 클래스 등록해야 함
+		maven의 dependency로 다운받아서 사용함 -->
+	<beans:bean class="net.sf.json.spring.web.servlet.view.JsonView"
+		id="jsonView">
+	</beans:bean>
+	
+	<!-- 파일 다운을 위한 뷰클래스 실행하는 뷰리졸버 등록함
+		주의 : id 속성을 지정하지 않는다.
+		여러 개의 뷰리졸버를 등록할 때는 실행 순서를 정해야 함
+		파일 다운용 뷰리졸버가 반드시 맨처음 실행되게 순서를 지정함
+		컨트롤러 메소드가 리턴하는 뷰이름과 일치하는 뷰클래스가 있으면
+		자동으로 해당 뷰클래스가 실행되게 됨
+	 -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="0" />
+		<!-- 제일 먼저 실행되도록 순번 지정함 -->
+	</beans:bean>
+	
+	
+	<context:component-scan base-package="com.site.meinsite" />
+	
+	<!-- 파일 업로드용 클래스 등록 : 
+			업로드시 파일 용량 제한 설정 (10MByte로 지정해 봄)-->
+	<beans:bean
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		id="multipartResolver">
+		<beans:property name="maxUploadSize" value="10000000" />
+	</beans:bean>
+
+	<!-- 작성된 클래스를 다른 클래스에서 사용되게 하려면 등록해야 함 -->
+	
+	<!-- <beans:bean class="com.test.first.common.FileDownloadView"
+		id="filedown">
+	</beans:bean> -->
+	<!-- 클래스 위에 어노테이션을 사용해서 자동 등록 처리 -->
+		
+	
+	
+</beans:beans>

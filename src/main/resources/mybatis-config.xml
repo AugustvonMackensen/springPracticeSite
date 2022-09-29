@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC
+"-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+		<setting name="cacheEnabled" value="false" />
+		
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.site.meinsite.member.model.vo.Member" alias="Member" />
+		<typeAlias type="com.site.meinsite.notice.model.vo.Notice" alias="Notice" />
+		<typeAlias type="com.site.meinsite.board.model.vo.Board" alias="Board" />
+		<typeAlias type="com.site.meinsite.common.SearchDate" alias="SearchDate" />
+		<typeAlias type="com.site.meinsite.common.Paging" alias="Paging" />
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="mappers/member-mapper.xml" />
+		<mapper resource="mappers/notice-mapper.xml" />
+		<mapper resource="mappers/board-mapper.xml" />
+	</mappers>
+</configuration>

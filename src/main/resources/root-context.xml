@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- DataSorce 등록 -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource"
+		id="realDataSource" destroy-method="close">
+	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+	<property name="username" value="c##project" />
+	<property name="password" value="assignment" />
+	</bean>
+	
+	<!-- 전달값이 적용되어 실행되는 query 문과 resultSet 결과값을
+		로그로 출력되게 하려면, dataSource에 로그 연결 설정을 해야함
+	 -->
+	 <!-- pom.xml 의 log4jdbc-remix 관련 dataSource 처리 -->
+	 <bean id="dataSource"
+	 	class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	<constructor-arg ref="realDataSource" />
+	<property name="logFormatter">
+		<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+			<property name="loggingType" value="MULTI_LINE" />
+			<property name="sqlPrefix" value="[SQL]" />
+		</bean>
+	</property>
+	 </bean>
+
+	 <!-- Spring과 MyBatis 연동 설정 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean"
+		id="sqlSession">
+	<property name="configLocation" 
+			value="classpath:mybatis-config.xml"></property>
+	<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- dao 에서 사용할 myBatis 객체 생성 -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSession"></constructor-arg>
+	</bean>
+	
+	<!-- 트랜잭션 관리 설정 -->
+	<bean
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		id="transactionManager">
+	<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<context:property-placeholder location="classpath:config/email.properties" />
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="username" value="${email.account}" />
+		<property name="password" value="${email.password}" />
+		<!-- 보안연결 SSL 관련 설정 -->
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop> <!-- 2단계 본인인증 했으므로 true -->
+				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

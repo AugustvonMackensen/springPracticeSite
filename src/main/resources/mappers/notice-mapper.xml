@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticeMapper">
+
+	<resultMap type="notice" id="resultNotice">
+		<id column="noticeno" property="noticeno" />
+		<result column="noticetitle" property="noticetitle" />
+		<result column="noticedate" property="noticedate" />
+		<result column="noticewriter" property="noticewriter" />
+		<result column="noticecontent" property="noticecontent" />
+		<result column="original_filepath" property="original_filepath" />
+		<result column="rename_filepath" property="rename_filepath" />
+	</resultMap>
+	
+	<resultMap type="notice" id="resultNoticeTop3">
+		<id column="noticeno" property="noticeno" />
+		<result column="noticetitle" property="noticetitle" />
+		<result column="noticedate" property="noticedate" />
+	</resultMap>
+	
+	<select id="selectNewTop3" resultMap="resultNoticeTop3">
+		<![CDATA[
+		select *
+		from (select rownum rnum, noticeno, noticetitle, noticedate
+	    	from (select * from notice 
+	            order by noticedate desc, noticeno desc))
+		where rnum >= 1 and rnum <= 3
+		]]>
+	</select>
+	
+	<select id="selectAll" resultMap="resultNotice">
+		select * from notice
+		order by noticeno desc
+	</select>
+	
+	<select id="searchTitle" resultMap="resultNotice" parameterType="string">
+		select * from notice
+		where noticetitle like '%' || #{ keyword } || '%'
+		order by noticeno desc
+	</select>
+	
+	<select id="searchWriter" resultMap="resultNotice" parameterType="string">
+		select * from notice
+		where noticewriter like '%' || #{ keyword } || '%'
+		order by noticeno desc
+	</select>
+	
+	<select id="searchDate" resultMap="resultNotice" parameterType="SearchDate">
+		select * from notice
+		where noticedate between #{ begin } and #{ end }
+		order by noticeno desc
+	</select>
+	
+	<select id="selectNotice" parameterType="_int" resultMap="resultNotice">
+		select * from notice
+		where noticeno = #{ noticeno }
+	</select>
+	
+	<delete id="deleteNotice" parameterType="_int">
+		delete from notice
+		where noticeno = #{ noticeno }
+	</delete>
+	
+	<insert id="insertNotice" parameterType="Notice">
+		insert into notice(noticeno, noticetitle, noticewriter, noticedate, original_filepath, rename_filepath, noticecontent)
+		values ((select max(noticeno) + 1 from notice), #{ noticetitle }, #{ noticewriter }, sysdate, #{ original_filepath, jdbcType=VARCHAR }, 
+		#{ rename_filepath, jdbcType=VARCHAR }, #{ noticecontent })
+	</insert>
+	
+	<update id="updateNotice" parameterType="Notice">
+		update notice
+		set noticetitle = #{ noticetitle },
+			noticecontent = #{ noticecontent }
+			<if test="original_filepath != null">
+			, original_filepath = #{ original_filepath }
+			, rename_filepath = #{ rename_filepath }
+			</if>
+			<if test="original_filepath == null">
+			, original_filepath = null
+			, rename_filepath = null
+			</if>
+		where noticeno = #{ noticeno }
+	</update>
+</mapper>

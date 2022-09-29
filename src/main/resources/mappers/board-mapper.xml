@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+
+	<resultMap type="Board" id="resultBoard">
+		<id column="board_num" property="board_num" />
+		<result column="board_title" property="board_title" />
+		<result column="board_writer" property="board_writer" />
+		<result column="board_content" property="board_content" />
+		<result column="board_original_filename" property="board_original_filename" />
+		<result column="board_rename_filename" property="board_rename_filename" />
+		<result column="board_date" property="board_date" />
+		<result column="board_lev" property="board_lev" />
+		<result column="board_ref" property="board_ref" />
+		<result column="board_reply_ref" property="board_reply_ref" />
+		<result column="board_reply_seq" property="board_reply_seq" />
+		<result column="board_readcount" property="board_readcount" />
+	</resultMap>
+	
+	<resultMap type="Board" id="resultTop3">
+		<result column="board_num" property="board_num"/>
+		<result column="board_title" property="board_title"/>
+		<result column="board_readcount" property="board_readcount"/>
+	</resultMap>
+
+	<!-- 
+		비교 연산자(>, < , >=, <=) 를 쿼리문에 그냥 사용하면
+		태그 엘리먼트 꺽쇠괄호(<, >, &)와 혼동하는 문제가 발생할 수 있음
+		이 문제를 미리 방지하기 위해 xml 코드 중 xml parser에 의해 
+		해석하지 말고, 문장 그대로 해석하라는 뜻으로
+		<![CDATA[ 쿼리문장 ]]> 사용함
+	 -->
+	<select id="selectTop3" resultMap="resultTop3">
+		<![CDATA[
+		select *
+		from (select rownum rnum, board_num, board_title, board_readcount
+	    	from (select * from board
+	    			where board_lev = 1
+	            	order by board_readcount desc))
+		where rnum >= 1 and rnum <= 3
+		]]>
+	</select>
+	
+	<select id="getListCount" resultType="_int">
+		select count(*) from board
+	</select>
+	
+	<select id="selectList" parameterType="Paging" resultMap="resultBoard">
+		<![CDATA[
+			select *
+			from (select rownum rnum, board_num, board_title, board_writer, board_content, board_original_filename, 
+			board_rename_filename, board_date, board_lev, board_ref, board_reply_ref, board_reply_seq, board_readcount
+					from (select * from board
+							order by board_ref desc, board_reply_ref desc,
+										board_lev asc, board_reply_seq asc))
+			where rnum >= #{ startRow } and rnum <= #{ endRow }
+		]]>
+	</select>
+	
+</mapper>
