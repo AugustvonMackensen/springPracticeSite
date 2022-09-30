@@ -21,21 +21,25 @@ CREATE TABLE USERS (
 ALTER TABLE USERS
 DROP PRIMARY KEY;
 
--- »èÁ¦·êÀ» Ãß°¡ÇÑ »õ Á¦¾àÁ¶°Ç Ãß°¡ÇÔ
+-- ì‚­ì œë£°ì„ ì¶”ê°€í•œ ìƒˆ ì œì•½ì¡°ê±´ ì¶”ê°€í•¨
 ALTER TABLE USERS
 ADD CONSTRAINT FK_MEMBER_UID 
 FOREIGN KEY(USERID) REFERENCES MEMBER ON DELETE CASCADE;
 
-COMMENT ON COLUMN MEMBER.USERID IS '¾ÆÀÌµð';
-COMMENT ON COLUMN MEMBER.USERPWD IS 'ÆÐ½º¿öµå';
-COMMENT ON COLUMN MEMBER.USERNAME IS 'ÀÌ¸§';
-COMMENT ON COLUMN MEMBER.EMAIL IS 'ÀÌ¸ÞÀÏ';
-COMMENT ON COLUMN MEMBER.LOGINOK IS '·Î±×ÀÎ È°¼º/ºñÈ°¼º ¿©ºÎ';
-COMMENT ON COLUMN MEMBER.ADMIN IS '°ü¸®ÀÚ ¸ðµåÀÎÁö È®ÀÎ¿©ºÎ';
-COMMENT ON COLUMN MEMBER.ENROLL_DATE IS 'È¸¿ø°¡ÀÔÇÑ ³¯Â¥';
--- TRIGGER ÀÛ¼º : ÀÌ¸§ - TRI_INSERT_USERS
--- MEMBER Å×ÀÌºí¿¡ »õ È¸¿øÁ¤º¸°¡ ±â·ÏµÇ¸é, ÀÚµ¿À¸·Î USERS Å×ÀÌºí¿¡ ¾ÆÀÌµð, ¾ÏÈ£, ÀÌ¸§ÀÌ
--- INSERT µÇ°Ô ÇÔ
+-- ì´ë©”ì¼ ì œì•½ì¡°ê±´ ì¶”ê°€ 
+ALTER TABLE MEMBER
+ADD CONSTRAINT MAIL_UNIQUE UNIQUE(EMAIL);
+
+COMMENT ON COLUMN MEMBER.USERID IS 'ì•„ì´ë””';
+COMMENT ON COLUMN MEMBER.USERPWD IS 'íŒ¨ìŠ¤ì›Œë“œ';
+COMMENT ON COLUMN MEMBER.USERNAME IS 'ì´ë¦„';
+COMMENT ON COLUMN MEMBER.EMAIL IS 'ì´ë©”ì¼';
+COMMENT ON COLUMN MEMBER.LOGINOK IS 'ë¡œê·¸ì¸ í™œì„±/ë¹„í™œì„± ì—¬ë¶€';
+COMMENT ON COLUMN MEMBER.ADMIN IS 'ê´€ë¦¬ìž ëª¨ë“œì¸ì§€ í™•ì¸ì—¬ë¶€';
+COMMENT ON COLUMN MEMBER.ENROLL_DATE IS 'íšŒì›ê°€ìž…í•œ ë‚ ì§œ';
+-- TRIGGER ìž‘ì„± : ì´ë¦„ - TRI_INSERT_USERS
+-- MEMBER í…Œì´ë¸”ì— ìƒˆ íšŒì›ì •ë³´ê°€ ê¸°ë¡ë˜ë©´, ìžë™ìœ¼ë¡œ USERS í…Œì´ë¸”ì— ì•„ì´ë””, ì•”í˜¸, ì´ë¦„ì´
+-- INSERT ë˜ê²Œ í•¨
 CREATE OR REPLACE TRIGGER TRI_INSERT_USERS
 AFTER INSERT ON MEMBER
 FOR EACH ROW
@@ -54,7 +58,7 @@ BEGIN
   WHERE USERID = :OLD.USERID;
 END;
 
--- °ü¸®ÀÚÀÎ 'admin' ÀÎ ¾ÆÀÌµðÀÇ ÄÃ·³°ª º¯°æ
+-- ê´€ë¦¬ìžì¸ 'admin' ì¸ ì•„ì´ë””ì˜ ì»¬ëŸ¼ê°’ ë³€ê²½
 UPDATE MEMBER
 SET ADMIN = 'Y'
 WHERE USERID = 'admin';
@@ -63,8 +67,8 @@ commit;
 
 select * from member;
 
--- notice ÀÇ °øÁö±Û µî·ÏÀº °ü¸®ÀÚ¸¸ µî·Ï/¼öÁ¤ÇÒ ¼ö ÀÖ°Ô Ã³¸®ÇÔ
--- °øÁö±Û µî·ÏÀÚ ¾ÆÀÌµð¸¦ ¼öÁ¤ : user01 >> admin À¸·Î º¯°æ
+-- notice ì˜ ê³µì§€ê¸€ ë“±ë¡ì€ ê´€ë¦¬ìžë§Œ ë“±ë¡/ìˆ˜ì •í•  ìˆ˜ ìžˆê²Œ ì²˜ë¦¬í•¨
+-- ê³µì§€ê¸€ ë“±ë¡ìž ì•„ì´ë””ë¥¼ ìˆ˜ì • : user01 >> admin ìœ¼ë¡œ ë³€ê²½
 UPDATE NOTICE
 SET NOTICEWRITER = 'admin';
 

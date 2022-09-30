@@ -44,6 +44,7 @@ function dupCheckId(){
 }
 
 function validate(){
+	
 	//전송보내기 전(submit 버튼 클릭시) 입력값 유효한 값인지 검사
 	
 	//암호화 암호확인이 일치하는지 확인
@@ -55,6 +56,12 @@ function validate(){
 				+ "다시 입력하세요.");
 		document.getElementById("upwd1").select();
 		return false;	//전송 안 함
+	}
+	
+	if(document.getElementById("validchkMessage").innerHTML === '인증번호가 일치하지 않습니다.'){
+		alert("이메일을 제대로 입력하거나 인증번호를 제대로 입력해주세요.")
+		document.getElementById("usermail").select();
+		return false;
 	}
 	
 	return true;	// 전송함
@@ -89,13 +96,12 @@ function chkCode(){
 		resultMsg.html('인증번호가 일치합니다.');
 		resultMsg.css('color', 'green');
 		$('#mailChkbtn').attr('disabled', true);
-		$('#usermail').attr('readonly', true);
-		return true;
-	} else{
+		$('#usermail').attr('readonly', true);		
+	} else{		
 		resultMsg.html('인증번호가 일치하지 않습니다.');
 		resultMsg.css('color', 'red');
-		return false;
 	}
+	
 }
 
 </script>
@@ -138,7 +144,7 @@ function chkCode(){
 	<tr>
 		<th width="120">* 인증번호</th>
 		<td class="mailcheck">
-			<input type="text" id="validnum" name="validnum" class="mailcheck-input" placeholder="인증번호" disabled="disabled" maxlength="6" onblur="return chkCode();"><br>
+			<input type="text" id="validnum" name="validnum" class="mailcheck-input" placeholder="인증번호" disabled="disabled" maxlength="6" onblur="chkCode();" required><br>
 			<span id="validchkMessage"></span>
 		</td>
 	</tr>

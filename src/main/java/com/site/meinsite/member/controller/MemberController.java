@@ -56,7 +56,7 @@ public class MemberController {
 	
 	@RequestMapping("movePwdRecovery.do")
 	public String movePwdRecoveryPage() {
-		return "member/PwdRecovery";
+		return "member/pwdRecovery";
 	}
 	
 	@RequestMapping("moveup.do")
