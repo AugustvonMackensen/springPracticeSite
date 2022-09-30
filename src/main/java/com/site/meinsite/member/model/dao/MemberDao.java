@@ -36,6 +36,9 @@ public class MemberDao {
 	public int deleteMember(String userid) {
 		return session.delete("memberMapper.deleteMember", userid);
 	}
+	public int selectMailCheck(String email) {
+		return session.selectOne("memberMapper.selectMailCheck", email);
+	}
 	
 
 }

@@ -15,18 +15,14 @@ public class MailSendService {
 	@Autowired
 	private JavaMailSenderImpl mailSender;
 	private int auth_num;
-	
-	//난수 발생
-	public void generateRnum() {
+
+	//이메일 전송
+	public String mailMessage(String email) {
 		Random rdm = new Random();
 		int checkNum = rdm.nextInt(888888) + 111111;
 		System.out.println("인증번호 : " +  checkNum);
 		auth_num = checkNum;
-	}
-	
-	//이메일 양식
-	public String mailMessage(String email) {
-		generateRnum();
+		
 		String setFrom = "holyromanempire16th@gmail.com";
 		String toMail = email;
 		String title = "회원 가입 인증 이메일입니다";

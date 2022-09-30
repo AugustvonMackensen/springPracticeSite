@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +18,12 @@ table#outer { border:2px solid navy; }
 //ajax(asynchronous Javascript and Xml) :
 //페이지를 바꾸지 않고, 서버와 통신하는 기술임 
 //(서버측에 서비스 요청하고 결과 받음)
+
+var chkIdButtonClicked = false;
+
+
 function dupCheckId(){
+	chkIdButtonClicked = true;
 	// 입력된 아이디가 중복되지 않았는지 확인 : jQuery.ajax() 사용
 	//jQuery는 $ 로 줄일 수 있음
 	//jQuery.ajax(); => $.ajax();
@@ -46,7 +52,19 @@ function dupCheckId(){
 function validate(){
 	
 	//전송보내기 전(submit 버튼 클릭시) 입력값 유효한 값인지 검사
+	//아이디 유효성 검사
+	form = document.signUp;
+	if(form.userid.value.length < 4){
+		alert("아이디 최소길이는 4글자입니다.")
+		document.getElementById("userid").select();
+		return false;
+	}
 	
+	if(chkIdButtonClicked == false){
+		alert("아이디 중복확인을 해주세요.");
+		return false;
+	}
+		
 	//암호화 암호확인이 일치하는지 확인
 	var pwd1 = document.getElementById("upwd1").value;
 	var pwd2 = document.getElementById("upwd2").value;
@@ -58,8 +76,8 @@ function validate(){
 		return false;	//전송 안 함
 	}
 	
-	if(document.getElementById("validchkMessage").innerHTML === '인증번호가 일치하지 않습니다.'){
-		alert("이메일을 제대로 입력하거나 인증번호를 제대로 입력해주세요.")
+	if(document.getElementById("validchkMessage").innerHTML !== '인증번호가 일치합니다.'){
+		alert("이메일을 제대로 입력하거나 인증번호를 제대로 입력해주세요.");
 		document.getElementById("usermail").select();
 		return false;
 	}
@@ -77,11 +95,18 @@ function validateMail(){
 		type: 'get',
 		url: '<c:url value="/mailCheck.do?email="/>' + email, //GET 방식이므로 url 뒤에 email 붙이기 가능
 		success: function(data){
-			console.log("data : " + data);
-			checkInput.attr('disabled', false);
-			code = data;
-			alert('인증번호가 전송되었습니다.');
-			return false;
+			if(data != "failure"){
+				console.log("data : " + data);
+				checkInput.attr('disabled', false);
+				code = data;
+				alert('인증번호가 전송되었습니다.');
+				return false;
+			} else {
+				alert('인증번호 전송 실패!');
+				$('#usermail').select();
+				return false;
+			}
+			
 		}
 	}); //end ajax
 } //end send mail
@@ -109,7 +134,7 @@ function chkCode(){
 <body>
 <h1 align="center">회원 가입 페이지</h1>
 <br>
-<form action="enroll.do" method="post" onsubmit="return validate();">
+<form action="enroll.do" method="post" name="signUp" onsubmit="return validate();">
 <table id="outer" align="center" width="500" cellspacing="5" cellpadding="0">
 	<tr>
 		<th colspan="2">회원 정보를 입력해 주세요.
@@ -117,22 +142,22 @@ function chkCode(){
 	</th></tr>
 	<tr>
 		<th width="120">* 이 름</th>
-		<td><input type="text" name="username" required></td>
+		<td><input type="text" name="username" maxlength="6" required></td>
 	</tr>
 	<tr>
 		<th width="120">* 아이디</th>
-		<td><input type="text" name="userid" id="userid" required> &nbsp;
+		<td><input type="text" name="userid" id="userid" maxlength="10" required> &nbsp;
 			&nbsp; &nbsp;
 			<input type="button" value="중복체크" onclick="return dupCheckId();">
 		</td>
 	</tr>
 	<tr>
 		<th width="120">* 암 호</th>
-		<td><input type="password" name="userpwd" id="upwd1" required></td>
+		<td><input type="password" name="userpwd" id="upwd1" minlength="8" maxlength="16" required></td>
 	</tr>
 	<tr>
 		<th width="120">* 암호확인</th>
-		<td><input type="password" id="upwd2"></td>
+		<td><input type="password" minlength="8" maxlength="16" id="upwd2"></td>
 	</tr>
 	<tr>
 		<th width="120">* 이메일</th>

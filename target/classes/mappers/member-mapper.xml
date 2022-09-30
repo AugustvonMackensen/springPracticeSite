@@ -35,6 +35,12 @@
 		where userid= #{ uid }
 	</select>
 	
+	<!-- 회원가입시 이메일 중복 체크 처리 -->
+	<select id = "selectMailCheck" parameterType="String" resultType="_int">
+		select count(email) from member
+		where email = #{ email }
+	</select>
+	
 	<!-- 이메일로 회원조회 -->
 	<select id="selectByMail" parameterType="string" resultType="Member">
 		select * from member

@@ -126,9 +126,16 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("mailCheck.do")
 	public String mailCheck(String email) {
-		System.out.println("이메일 인증 요청이 들어옴!");
-		System.out.println("이메일 인증 이메일 : " + email);
-		return mailService.mailMessage(email);
+		int mailCount = memberService.selectMailCheck(email);
+		
+		if(mailCount == 0 ) {
+			System.out.println("이메일 인증 요청이 들어옴!");
+			System.out.println("이메일 인증 이메일 : " + email);
+			return mailService.mailMessage(email);
+		} else {
+			String failureMessage = "failure";
+			return failureMessage;
+		}
 	}
 	
 	//아이디 중복확인
@@ -156,19 +163,24 @@ public class MemberController {
 	@PostMapping("enroll.do")
 	public String memberInsert(Member member, Model model, @RequestParam(name="validnum", required=false) String vnum){
 		logger.info("enroll.do" + member);
-		
-		//패스워드 암호화 처리
-		member.setUserpwd(this.bcryptPasswordEncoder.encode(member.getUserpwd()));
-		logger.info("after encode : " + member);
-		logger.info("length : " + member.getUserpwd().length());
-		
-		if(memberService.insertMember(member) > 0) {
-			//회원 가입 성공
-			return "common/main";
-		}else {
-			model.addAttribute("message", "회원 가입 실패!");
+		if(memberService.selectDupcheckId(member.getUserid()) == 0) {
+			//패스워드 암호화 처리
+			member.setUserpwd(this.bcryptPasswordEncoder.encode(member.getUserpwd()));
+			logger.info("after encode : " + member);
+			logger.info("length : " + member.getUserpwd().length());
+			
+			if(memberService.insertMember(member) > 0) {
+				//회원 가입 성공
+				return "common/main";
+			}else {
+				model.addAttribute("message", "회원 가입 실패!");
+				return "common/error";
+			}
+		} else {
+			model.addAttribute("message", "이미 가입된 회원의 아이디입니다.");
 			return "common/error";
 		}
+		
 	}
 	
 	//아이디 찾기
@@ -190,8 +202,23 @@ public class MemberController {
 	
 	//비밀번호 찾기 : 임시비밀번호 발급
 	@PostMapping("findPwd.do")
-	public String passRecovery(Member member, Model model) {
-		return "";
+	public void passRecovery(@RequestParam("userid") String userid, @RequestParam("email") String email, 
+			HttpServletResponse response) throws IOException {
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		//아이디 조회에 실패하면, 오류메세지 출력
+		if(memberService.selectByid(userid) == null) {
+			out.print("등록된 아이디가 아닙니다.");
+			out.close();
+		}else if(memberService.selectByMail(email) == null) { //이메일 조회 실패시 오류메세지 출력
+			out.print("등록된 이메일이 아닙니다.");
+			out.close();
+		}else {
+			String memberKey = "";
+					
+			
+		}
+		
 	}
 	
 	//회원 정보 보기

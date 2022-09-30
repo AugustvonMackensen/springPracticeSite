@@ -52,4 +52,9 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberDao.selectByMail(email);
 	}
+
+	@Override
+	public int selectMailCheck(String email) {
+		return memberDao.selectMailCheck(email);
+	}
 }
