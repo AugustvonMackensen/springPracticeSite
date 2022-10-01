@@ -78,10 +78,10 @@ function validate(){
 		return false;	//전송 안 함
 	}
 	
-	if(document.getElementById("emailStatus").innerHTML === '이메일을 입력하셨거나 변경하셨네요. 이메일 인증을 하세요.'){
-		 alert("이메일이 인증되지 않았습니다. 인증해 주세요.");
-		 document.getElementById("usermail").select();
-		 return false;
+	var passRule = "^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$";
+	if(!passRule.test(pwd1)){
+		alert("비밀번호는 8~16자 사이의 비밀번호로, 최소한 영문 대소문자와 특수문자를 1개씩 포함해야 합니다");
+		return false;
 	}
 	
 	if(document.getElementById("emailStatus").innerHTML === '이메일을 입력하셨거나 변경하셨네요. 이메일 인증을 하세요.'){
