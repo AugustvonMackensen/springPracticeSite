@@ -10,6 +10,12 @@
 <style type="text/css">
 table th { background-color: #99ffff; }
 table#outer { border:2px solid navy; }
+input#validchkMessage {
+	box-shadow: none;
+  	border-bottom: none;
+  	outline: none;
+    border: none;
+}
 </style>
 <script type="text/javascript" src="${ pageContext.servletContext.contextPath }/resources/js/jquery-3.6.1.min.js"></script>
 <script type="text/javascript">
@@ -19,14 +25,11 @@ table#outer { border:2px solid navy; }
 //페이지를 바꾸지 않고, 서버와 통신하는 기술임 
 //(서버측에 서비스 요청하고 결과 받음)
 
-var chkIdButtonClicked = false;
-
-
 function dupCheckId(){
-	chkIdButtonClicked = true;
 	// 입력된 아이디가 중복되지 않았는지 확인 : jQuery.ajax() 사용
 	//jQuery는 $ 로 줄일 수 있음
 	//jQuery.ajax(); => $.ajax();
+	const idchkMsg = $('#idDupCheckMsg');
 	$.ajax({
 		url: "idchk.do",
 		type: "post",
@@ -34,10 +37,11 @@ function dupCheckId(){
 		success: function(data){
 			console.log("sucess : " + data);
 			if(data == "ok"){
-				alert("사용 가능한 아이디입니다.");
-				$("#upwd1").focus();
+				idchkMsg.html("사용 가능한 아이디입니다.");
+				idchkMsg.css('color', 'green');
 			} else{
-				alert("이미 사용중인 아이디입니다.\n다시 입력하세요.")
+				idchkMsg.html("이미 가입된 회원의 아이디입니다.");
+				idchkMsg.css('color', 'red');
 				$("#userid").select();
 			}
 		},
@@ -45,8 +49,6 @@ function dupCheckId(){
 			console.log("error : " + jqXHR + ", " + textStatus + ", " + errorThrown);
 		}
 	});
-	
-	return false;	//클릭 이벤트 전달을 막음
 }
 
 function validate(){
@@ -55,16 +57,16 @@ function validate(){
 	//아이디 유효성 검사
 	form = document.signUp;
 	if(form.userid.value.length < 4){
-		alert("아이디 최소길이는 4글자입니다.")
+		alert("아이디 최소길이는 4글자입니다.");
 		document.getElementById("userid").select();
 		return false;
 	}
 	
-	if(chkIdButtonClicked == false){
-		alert("아이디 중복확인을 해주세요.");
+	if(document.getElementById("idDupCheckMsg").innerHTML !== '사용 가능한 아이디입니다.'){
+		alert("이미 가입된 회원의 아이디입니다.");
 		return false;
 	}
-		
+	
 	//암호화 암호확인이 일치하는지 확인
 	var pwd1 = document.getElementById("upwd1").value;
 	var pwd2 = document.getElementById("upwd2").value;
@@ -76,20 +78,40 @@ function validate(){
 		return false;	//전송 안 함
 	}
 	
+	if(document.getElementById("emailStatus").innerHTML === '이메일을 입력하셨거나 변경하셨네요. 이메일 인증을 하세요.'){
+		 alert("이메일이 인증되지 않았습니다. 인증해 주세요.");
+		 document.getElementById("usermail").select();
+		 return false;
+	}
+	
+	if(document.getElementById("emailStatus").innerHTML === '이메일을 입력하셨거나 변경하셨네요. 이메일 인증을 하세요.'){
+		 alert("이메일이 인증되지 않았습니다. 인증해 주세요.");
+		 document.getElementById("usermail").select();
+		 return false;
+	}
+	
 	if(document.getElementById("validchkMessage").innerHTML !== '인증번호가 일치합니다.'){
-		alert("이메일을 제대로 입력하거나 인증번호를 제대로 입력해주세요.");
-		document.getElementById("usermail").select();
+		alert("인증번호를 제대로 입력해주세요.");
+		document.getElementById("validnum").select();
 		return false;
 	}
 	
 	return true;	// 전송함
 }
+//이메일 값 변경여부 확인
+function statusMail(){
+	const mailStatusMsg = $('#emailStatus');
+	mailStatusMsg.html('이메일을 입력하셨거나 변경하셨네요. 이메일 인증을 하세요.');
+	mailStatusMsg.css('color', 'blue');
+}
 
+//이메일 인증
 function validateMail(){
-	console.log("동작되었음")
+	console.log("동작되었음");
 	const email = $('#usermail').val(); //이메일 주소값 얻어오기
 	console.log("이메일 : " + email); //오는지 확인
 	const checkInput = $('.mailcheck-input'); // 인증번호 입력하는 곳
+	const mailStatusMsg = $('#emailStatus');
 	
 	$.ajax({
 		type: 'get',
@@ -101,12 +123,14 @@ function validateMail(){
 				code = data;
 				alert('인증번호가 전송되었습니다.');
 				return false;
+				
 			} else {
-				alert('인증번호 전송 실패!');
+				alert('가입된 회원의 이메일입니다.');
+				mailStatusMsg.html('가입된 회원의 이메일입니다.');
+				mailStatusMsg.css('color', 'red');
 				$('#usermail').select();
 				return false;
 			}
-			
 		}
 	}); //end ajax
 } //end send mail
@@ -116,25 +140,26 @@ function validateMail(){
 function chkCode(){
 	const inputCode = document.getElementById("validnum").value;
 	const resultMsg = $('#validchkMessage');
+	const mailStatusMsg = $('#emailStatus');
 	
 	if(inputCode == code){
 		resultMsg.html('인증번호가 일치합니다.');
 		resultMsg.css('color', 'green');
-		$('#mailChkbtn').attr('disabled', true);
-		$('#usermail').attr('readonly', true);		
+		mailStatusMsg.html('인증되었습니다.');
+		mailStatusMsg.css('color', 'green');
 	} else{		
 		resultMsg.html('인증번호가 일치하지 않습니다.');
 		resultMsg.css('color', 'red');
-	}
-	
+		mailStatusMsg.html('이메일 인증이 실패하였습니다.');
+		mailStatusMsg.css('color', 'red');
+	}	
 }
-
 </script>
 </head>
 <body>
 <h1 align="center">회원 가입 페이지</h1>
 <br>
-<form action="enroll.do" method="post" name="signUp" onsubmit="return validate();">
+<form action="enroll.do" method="post" id="signUp" name="signUp" onsubmit="return validate();">
 <table id="outer" align="center" width="500" cellspacing="5" cellpadding="0">
 	<tr>
 		<th colspan="2">회원 정보를 입력해 주세요.
@@ -146,9 +171,8 @@ function chkCode(){
 	</tr>
 	<tr>
 		<th width="120">* 아이디</th>
-		<td><input type="text" name="userid" id="userid" maxlength="10" required> &nbsp;
-			&nbsp; &nbsp;
-			<input type="button" value="중복체크" onclick="return dupCheckId();">
+		<td><input type="text" name="userid" id="userid" maxlength="10" oninput="dupCheckId();" required><br>
+			<span id="idDupCheckMsg"></span>
 		</td>
 	</tr>
 	<tr>
@@ -162,21 +186,21 @@ function chkCode(){
 	<tr>
 		<th width="120">* 이메일</th>
 		<td>
-			<input type="email" name="email" id="usermail" required> &nbsp;&nbsp;
-			<input type="button" id="mailChkbtn" value="인증" onclick="return validateMail();">
+			<input type="email" name="email" id="usermail" oninput="statusMail();" required> &nbsp;&nbsp;
+			<input type="button" id="mailChkbtn" value="인증" onclick="return validateMail();"><br>
+			<span id ="emailStatus"></span>
 		</td>
 	</tr>
 	<tr>
 		<th width="120">* 인증번호</th>
 		<td class="mailcheck">
-			<input type="text" id="validnum" name="validnum" class="mailcheck-input" placeholder="인증번호" disabled="disabled" maxlength="6" onblur="chkCode();" required><br>
+			<input type="text" id="validnum" name="validnum" class="mailcheck-input" placeholder="인증번호" disabled="disabled" maxlength="6" oninput="chkCode();" required><br>
 			<span id="validchkMessage"></span>
 		</td>
 	</tr>
 	<tr>
 		<th colspan="2">
 			<input type="submit" value="가입하기"> &nbsp;
-			<input type="reset" value="작성취소"> &nbsp;
 			<a href="main.do">시작페이지로 이동</a>
 		</th>
 	</tr>

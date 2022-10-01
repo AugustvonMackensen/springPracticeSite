@@ -160,28 +160,25 @@ public class MemberController {
 	}
 	
 	//회원가입
+	//회원가입
 	@PostMapping("enroll.do")
 	public String memberInsert(Member member, Model model, @RequestParam(name="validnum", required=false) String vnum){
 		logger.info("enroll.do" + member);
-		if(memberService.selectDupcheckId(member.getUserid()) == 0) {
-			//패스워드 암호화 처리
-			member.setUserpwd(this.bcryptPasswordEncoder.encode(member.getUserpwd()));
-			logger.info("after encode : " + member);
-			logger.info("length : " + member.getUserpwd().length());
-			
-			if(memberService.insertMember(member) > 0) {
-				//회원 가입 성공
-				return "common/main";
-			}else {
-				model.addAttribute("message", "회원 가입 실패!");
-				return "common/error";
-			}
-		} else {
-			model.addAttribute("message", "이미 가입된 회원의 아이디입니다.");
+		
+		//패스워드 암호화 처리
+		member.setUserpwd(this.bcryptPasswordEncoder.encode(member.getUserpwd()));
+		logger.info("after encode : " + member);
+		logger.info("length : " + member.getUserpwd().length());
+		
+		if(memberService.insertMember(member) > 0) {
+			//회원 가입 성공
+			return "common/main";
+		}else {
+			model.addAttribute("message", "회원 가입 실패!");
 			return "common/error";
 		}
-		
 	}
+		
 	
 	//아이디 찾기
 	@RequestMapping("idRecovery.do")
