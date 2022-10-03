@@ -30,6 +30,7 @@ function dupCheckId(){
 	//jQuery는 $ 로 줄일 수 있음
 	//jQuery.ajax(); => $.ajax();
 	const idchkMsg = $('#idDupCheckMsg');
+
 	$.ajax({
 		url: "idchk.do",
 		type: "post",
@@ -49,8 +50,43 @@ function dupCheckId(){
 			console.log("error : " + jqXHR + ", " + textStatus + ", " + errorThrown);
 		}
 	});
+	
+	idMinLength = document.getElementById("userid").value.length;
+	if(idMinLength < 4){
+		idchkMsg.html("아이디는 최소 4자 이상이어야 합니다.");
+		idchkMsg.css('color', 'red');
+	}
 }
 
+
+function chkPwd(){
+	var pwd1 = document.getElementById("upwd1").value;
+	var pwd2 = document.getElementById("upwd2").value;
+	var passRule = /^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$/;
+	const chkPwdRuleMsg = $('#pwRuleChk');
+	
+	if(passRule.test(pwd1) === false){
+		chkPwdRuleMsg.html("비밀번호는 8~16자의 영문 대소문자와 숫자, 특수문자를 적어도 하나는 포함해야 합니다.");
+		chkPwdRuleMsg.css('color', 'red');
+	}else{
+		chkPwdRuleMsg.html("");
+	}
+	
+}
+
+function validPW(){
+	var pwd1 = document.getElementById("upwd1").value;
+	var pwd2 = document.getElementById("upwd2").value;
+	const chkpwdMsg = $('#chkPwdMessage');
+	
+	if(pwd1 !== pwd2){
+		chkpwdMsg.html("비밀번호가 일치하지 않습니다.");
+		chkpwdMsg.css('color', 'red');
+	}else {
+		chkpwdMsg.html("비밀번호가 일치합니다.");
+		chkpwdMsg.css('color', 'green');
+	}
+}
 function validate(){
 	
 	//전송보내기 전(submit 버튼 클릭시) 입력값 유효한 값인지 검사
@@ -72,15 +108,14 @@ function validate(){
 	var pwd2 = document.getElementById("upwd2").value;
 	
 	if(pwd1 !== pwd2){
-		alert("암호와 암호 확인의 값이 일치하지 않습니다.\n"
-				+ "다시 입력하세요.");
+		alert("비밀번호가 일치하지 않습니다.");
 		document.getElementById("upwd1").select();
 		return false;	//전송 안 함
 	}
 	
-	var passRule = "^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$";
-	if(!passRule.test(pwd1)){
-		alert("비밀번호는 8~16자 사이의 비밀번호로, 최소한 영문 대소문자와 특수문자를 1개씩 포함해야 합니다");
+	var passRule = /^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$/;
+	if(passRule.test(pwd1) === false){
+		alert("비밀번호는 8~16자의 영문 대소문자와 숫자, 특수문자를 적어도 하나는 포함해야 합니다.");
 		return false;
 	}
 	
@@ -177,11 +212,17 @@ function chkCode(){
 	</tr>
 	<tr>
 		<th width="120">* 암 호</th>
-		<td><input type="password" name="userpwd" id="upwd1" minlength="8" maxlength="16" required></td>
+		<td>
+			<input type="password" name="userpwd" id="upwd1" minlength="8" maxlength="16" oninput="chkPwd();" required><br>
+			<span id="pwRuleChk"></span>
+		</td>
 	</tr>
 	<tr>
 		<th width="120">* 암호확인</th>
-		<td><input type="password" minlength="8" maxlength="16" id="upwd2"></td>
+		<td>
+			<input type="password" minlength="8" maxlength="16" id="upwd2" oninput="validPW();"><br>
+			<span id="chkPwdMessage"></span>
+		</td>
 	</tr>
 	<tr>
 		<th width="120">* 이메일</th>
