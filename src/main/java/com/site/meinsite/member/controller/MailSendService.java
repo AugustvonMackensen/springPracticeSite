@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,7 +17,7 @@ public class MailSendService {
 	private JavaMailSenderImpl mailSender;
 	private int auth_num;
 
-	//이메일 전송
+	//이메일 인증번호 전송
 	public String mailMessage(String email) {
 		Random rdm = new Random();
 		int checkNum = rdm.nextInt(888888) + 111111;
@@ -31,6 +32,22 @@ public class MailSendService {
 		mailSend(setFrom, toMail, title, content);
 		return Integer.toString(auth_num);
 	}
+	
+	//임시비밀번호 발급
+	public String sendTempPwd(String userid, String email) {
+		String memberKey = 
+				RandomStringUtils.random(10, 33, 125, false, false);
+		System.out.println("임시비밀번호 : " +  memberKey);
+		String setFrom = "holyromanempire16th@gmail.com";
+		String toMail = email;
+		String title = "임시 비밀번호를 발급해드립니다.";
+		String content = "안녕하세요. " + userid + "님, <br>" +
+				"임시비밀번호는 " + memberKey + "입니다. <br>" +
+				"임시비밀번호로 로그인 후, 비밀번호를 변경해 주세요.";
+		mailSend(setFrom, toMail, title, content);
+		return memberKey;
+	}
+	
 
 	private void mailSend(String setFrom, String toMail, String title, String content) {
 		MimeMessage message = mailSender.createMimeMessage();

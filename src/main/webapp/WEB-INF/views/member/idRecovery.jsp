@@ -13,5 +13,6 @@
 <label>이메일 : <input type="email" name="email"><input type="submit" value="아이디 찾기">
 </label>
 </form>
+<button onclick="javascript:location.href='${ pageContext.servletContext.contextPath }/main.do'">홈으로 이동</button>
 </body>
 </html>

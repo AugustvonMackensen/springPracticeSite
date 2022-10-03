@@ -14,9 +14,9 @@ table#outer { border:2px solid navy; }
 <script type="text/javascript">
 
 function validate(){
-	//암호확인의 포커스가 사라질 때 암호와 암호확인 일치하는지 검사
+	//비밀번호 유효성 검사
+	var passRule = /^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$/;
 	
-	//암호화 암호확인이 일치하는지 확인
 	var pwd1 = document.getElementById("upwd1").value;
 	var pwd2 = document.getElementById("upwd2").value;
 	
@@ -24,8 +24,15 @@ function validate(){
 		alert("암호와 암호 확인의 값이 일치하지 않습니다.\n"
 				+ "다시 입력하세요.");
 		document.getElementById("upwd1").select();
+		return false;
 	}
 	
+	if(passRule.test(pwd1) === false){
+		alert("비밀번호는 8~16자의 영문 대소문자와 숫자, 특수문자를 적어도 하나는 포함해야 합니다.");
+		document.getElementById("upwd1").select();
+		return false;
+	}
+	return true;
 }
 </script>
 </head>

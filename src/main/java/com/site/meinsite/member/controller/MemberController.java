@@ -129,8 +129,6 @@ public class MemberController {
 		int mailCount = memberService.selectMailCheck(email);
 		
 		if(mailCount == 0 ) {
-			System.out.println("이메일 인증 요청이 들어옴!");
-			System.out.println("이메일 인증 이메일 : " + email);
 			return mailService.mailMessage(email);
 		} else {
 			String failureMessage = "failure";
@@ -160,15 +158,10 @@ public class MemberController {
 	}
 	
 	//회원가입
-	//회원가입
 	@PostMapping("enroll.do")
 	public String memberInsert(Member member, Model model, @RequestParam(name="validnum", required=false) String vnum){
-		logger.info("enroll.do" + member);
-		
 		//패스워드 암호화 처리
 		member.setUserpwd(this.bcryptPasswordEncoder.encode(member.getUserpwd()));
-		logger.info("after encode : " + member);
-		logger.info("length : " + member.getUserpwd().length());
 		
 		if(memberService.insertMember(member) > 0) {
 			//회원 가입 성공
@@ -199,25 +192,27 @@ public class MemberController {
 	
 	//비밀번호 찾기 : 임시비밀번호 발급
 	@PostMapping("findPwd.do")
-	public void passRecovery(@RequestParam("userid") String userid, @RequestParam("email") String email, 
+	public void passRecovery(Member loginMember, 
 			HttpServletResponse response) throws IOException {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
+		String userid = loginMember.getUserid();
+		String email = loginMember.getEmail();
 		//아이디 조회에 실패하면, 오류메세지 출력
-		if(memberService.selectByid(userid) == null) {
-			out.print("등록된 아이디가 아닙니다.");
-			out.close();
-		}else if(memberService.selectByMail(email) == null) { //이메일 조회 실패시 오류메세지 출력
-			out.print("등록된 이메일이 아닙니다.");
+		if(memberService.chkSelectForPwd(loginMember) == 0) {
+			out.print("등록된 아이디 또는 이메일이 없습니다.");
 			out.close();
 		}else {
-			String memberKey = "";
-					
-			
+			String tempKey = mailService.sendTempPwd(userid, email);
+			loginMember.setUserpwd(bcryptPasswordEncoder.encode(tempKey));
+			memberService.findPwd(loginMember);
+			out.print("인증번호가 발송되었습니다. <br>");
+			out.print("<a href=\"main.do\">홈으로 이동</a>");
+			out.close();
 		}
 		
 	}
-	
+		
 	//회원 정보 보기
 	//리턴 타입으로 String, ModelAndView를 사용할 수 있음
 	@RequestMapping("myinfo.do")
@@ -239,10 +234,7 @@ public class MemberController {
 
 	//회원 정보 수정
 	@PostMapping("mupdate.do")
-	public String memberUpdate(Member member, Model model, @RequestParam("origin_userpwd") String originUserpwd) {
-		logger.info("mupdate.do : " + member);
-		logger.info("origin_userpwd : " + originUserpwd);
-		
+	public String memberUpdate(Member member, Model model, @RequestParam("origin_userpwd") String originUserpwd) {		
 		//새로운 암호 전송 시, 패스워드 암호화 처리
 		String userpwd = member.getUserpwd().trim();
 		if(userpwd != null && userpwd.length() > 0) {

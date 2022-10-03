@@ -39,6 +39,9 @@ public class MemberDao {
 	public int selectMailCheck(String email) {
 		return session.selectOne("memberMapper.selectMailCheck", email);
 	}
+	public int chkSelectForPwd(Member loginMember) {
+		return session.selectOne("memberMapper.chkSelectForPwd", loginMember);
+	}
 	
 
 }

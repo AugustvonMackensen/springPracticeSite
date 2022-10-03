@@ -57,4 +57,9 @@ public class MemberServiceImpl implements MemberService{
 	public int selectMailCheck(String email) {
 		return memberDao.selectMailCheck(email);
 	}
+
+	@Override
+	public int chkSelectForPwd(Member loginMember) {
+		return memberDao.chkSelectForPwd(loginMember);
+	}
 }

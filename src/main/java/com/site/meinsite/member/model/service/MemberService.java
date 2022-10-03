@@ -13,5 +13,6 @@ public interface MemberService {
 	Member selectByMail(String email);
 	int updateMember(Member member);
 	int deleteMember(String userid);
+	int chkSelectForPwd(Member loginMember);
 
 }
