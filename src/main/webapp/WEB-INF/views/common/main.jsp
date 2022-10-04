@@ -163,7 +163,7 @@ function movePage(){
 		<div id="loginBox" class="lineA">
 			first 사이트 방문을 환영합니다.<br>
 			<button onclick="movePage()">로그인 하세요</button><br>
-			<a href="enrollPage.do">회원가입</a>
+			<a href="pickEnroll.do">회원가입</a>
 		</div>
 	</c:if>
 	<!-- 로그인 했을 때 : 일반회원인 경우 -->
