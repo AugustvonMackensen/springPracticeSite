@@ -82,6 +82,10 @@ public class MemberController {
 		return "member/chooseSignUp";
 	}
 	
+	@RequestMapping("uploadImage.do")
+	public String moveUploadImg() {
+		return "member/uploadCardImg";
+	}
 	
 	// -----------------------------------------------------------
 	
@@ -182,7 +186,9 @@ public class MemberController {
 			return "common/error";
 		}
 	}
-		
+	
+	//명함 회원가입
+	//2. 이미지로 업로
 	
 	//아이디 찾기
 	@RequestMapping("idRecovery.do")
@@ -284,4 +290,5 @@ public class MemberController {
 			return "common/error";
 		}
 	}
+	
 }
