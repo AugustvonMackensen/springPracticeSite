@@ -40,5 +40,6 @@ function previewImage(f){
 	<input type="file" name="nameCardFile" id="nameCardImg" accept="image/*" onchange="previewImage(this);" required>
 </div>
 <div id="preview"></div>
+<button type="button" id="extractBtn" name="extractBtn" class="extractBtn" onclick="extractTxt();"></button>
 </body>
 </html>
