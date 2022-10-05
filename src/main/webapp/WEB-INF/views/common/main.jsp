@@ -58,85 +58,6 @@ section div table {
 <script type="text/javascript"
 src="${ pageContext.servletContext.contextPath }/resources/js/jquery-3.6.1.min.js"></script>
 <script type="text/javascript">
-//자동 실행이 되게 하려면
-//jquery(document.ready(function(){})); => 줄임말로 표현함
-$(function(){
-	/* 주기적으로 시간 간격을 두고 자동 실행되게 하려면
-		자바스크립트 내장함수 setInterval(실행시킬 함수명, 시간밀리초)
-		사용하면 됨
-		예 : setInterval(movePage, 1000);
-	*/
-	//setInterval(function(){
-		//console.log("setInterval() 로 자동 실행 확인.");
-		
-		//최근 공지글 3개 출력되게 함 : ajax 사용
-		$.ajax({
-			url: "ntop3.do",
-			type: "post",
-			dataType: "json",
-			success: function(data){
-				console.log("success : " + data); //Object로 출력
-				
-				//object => string 으로 바꿈
-				var jsonStr = JSON.stringify(data);
-				//string => json 객체로 바꿈
-				var json = JSON.parse(jsonStr);
-				
-				
-				//출력 문자열 준비
-				var values = $("#newnotice").html("<tr><th>번호</th><th>제목</th><th>날짜</th></tr>");
-				for(var i in json.list){	//인덱스 i가 자동 1씩 증가하는 루프문
-					values += "<tr><td>" + json.list[i].noticeno
-								+ "</td><td><a href='ndetail.do?noticeno="+ json.list[i].noticeno +"'>" 
-								+ decodeURIComponent(json.list[i].noticetitle).replace(/\+/gi, " ")
-								+"</a></td><td>" + json.list[i].noticedate
-								+ "</td></tr>";
-				} //for in
-				
-				$("#newnotice").html($("#newnotice").html() + values);
-				
-			},
-			error: function(jqXHR, textStatus, errorThrown ){
-				console.log("ntop3 error : " + jqXHR + ", " + textStatus + ", " + errorThrown);
-			}
-		}); //ntop3do.ajax
-		
-		//조회수 많은 인기 게시원글 3개 조회 출력되게 함 : ajax 사용
-		$.ajax({
-			url: "btop3.do",
-			type: "post",
-			dataType: "json",
-			success: function(data){
-				console.log("success : " + data); //Object로 출력
-				
-				//object => string 으로 바꿈
-				var jsonStr = JSON.stringify(data);
-				//string => json 객체로 바꿈
-				var json = JSON.parse(jsonStr);
-				
-				var bvalues = "";
-				for(var i in json.list){	//인덱스 i가 자동 1씩 증가하는 루프문
-					bvalues += "<tr><td>" + json.list[i].board_num
-								+ "</td><td><a href='bdetail.do?board_num="+ json.list[i].board_num +"'>" 
-								+ decodeURIComponent(json.list[i].board_title).replace(/\+/gi, " ")
-								+"</a></td><td>" + json.list[i].board_readcount
-								+ "</td></tr>";
-				} //for in
-				
-				$("#toplist").html($("#toplist").html() + bvalues);
-				
-			},
-			error: function(jqXHR, textStatus, errorThrown ){
-				console.log("btop3 error : " + jqXHR + ", " + textStatus + ", " + errorThrown);
-			}
-		});
-		
-		
-	//}, 3000);	//3초마다 자동 실행됨
-
-	
-});
-
 function movePage(){
 	location.href = "loginPage.do";
 }
@@ -194,28 +115,6 @@ function movePage(){
 		</div>
 	</c:if>
 </center>
-<hr style="clear:both;">
-<section>
-	<!--  최근 등록된 공지글 3개 조회 출력 -->
-	<div style="float:left; border:1px solid navy; padding:5px; margin:5px;">
-		<h4>최근 공지글</h4>
-		<table id="newnotice" border="1" cellspacing="0">
-		</table>
-	</div>
-	
-	<!--  조회수 많은 게시글 3개 조회 출력 -->
-	<div style="float:left; border:1px solid navy; padding:5px; margin:5px;">
-		<h4>인기 게시글</h4>
-		<table id="toplist" border="1" cellspacing="0">
-			<tr>
-				<th>번호</th>
-				<th>제목</th>
-				<th>조회수</th>
-			</tr>
-		</table>
-	</div>
-</section>
-
 <hr style="clear:both;">
 <c:import url="/WEB-INF/views/common/footer.jsp" />
 </body>

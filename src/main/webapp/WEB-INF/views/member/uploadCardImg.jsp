@@ -25,7 +25,7 @@ function previewImage(f){
 		
 		//파일 읽기 완료시 실행
 		reader.onload = function(input){
-			document.getElementById('preview').innerHTML = '<img src="' + input.target.result + '">';
+			document.getElementById('preview').innerHTML = '<img src="' + input.target.result + '" name="previewImg" id="previewImg">';
 		}
 		
 		//파일 읽기
@@ -33,13 +33,21 @@ function previewImage(f){
 	}
 
 }
+
+
+
 </script>
 </head>
 <body>
-<div class="namecard-upload">
-	<input type="file" name="nameCardFile" id="nameCardImg" accept="image/*" onchange="previewImage(this);" required>
-</div>
-<div id="preview"></div>
-<button type="button" id="extractBtn" name="extractBtn" class="extractBtn" onclick="extractTxt();"></button>
+<form action="extractImgtoTxt.do" method="post" enctype="multipart/form-data">
+	명함 업로드 : <input type="file" name="nameCardFile" id="nameCardImg" accept="image/*" onchange="previewImage(this);" required><br>
+	<div id="preview"></div><br>
+	<input type="submit" value="텍스트 추출">
+</form>
+<p>
+<form action="sendEnrollForm.do">
+	<textarea id="extractedTxt" name="extractedTxt" readonly>${ extractedTxt }</textarea>
+<input type="submit" value="등록">
+</form>
 </body>
 </html>
