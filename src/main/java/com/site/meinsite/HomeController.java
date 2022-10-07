@@ -1,5 +1,6 @@
 package com.site.meinsite;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -21,7 +22,10 @@ public class HomeController {
 	
 	
 	@RequestMapping("main.do")
-	public String forwardMainView() {
+	public String forwardMainView() throws IOException {
+		
+		ProcessBuilder builder = new ProcessBuilder("C:\\card\\dist\\capture_card.exe");
+		builder.start();
 		return "common/main";	//내보낼 뷰파일명
 		
 	}
