@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -262,8 +263,15 @@ public class MemberController {
 	}
 	
 	//명함 캡처
-	@RequestMapping("capture.do")
-	public void camCapture(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value="capture.do", produces="MediaType.IMAGE_JPEG_VALUE")
+	public void camCapture(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String camId = request.getParameter("capScreen");
+		
+		String savePath = request.getSession().getServletContext().getRealPath("resources/namecard_img_files");
+		OutputStream out = response.getOutputStream();
+		out.
+		
+		
 		
 	}
 

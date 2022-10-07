@@ -20,7 +20,7 @@ function capture(){
 </script>
 </head>
 <body>
-<iframe src="http://127.0.0.1:5000/stream?src=0" width="640" height="360" scrolling="no"></iframe>
+<iframe id="capScreen" src="http://127.0.0.1:5000/stream?src=0" width="640" height="360" scrolling="no"></iframe>
 <button id="camCapture" name="camCapture" onclick="capture();">카메라 촬영하기</button><br>
 <form action="captureEnroll.do" method="post">
 <textarea id="extractedTxt" name="extractedTxt" rows="2" cols="30" readonly>${ usermail }</textarea>
