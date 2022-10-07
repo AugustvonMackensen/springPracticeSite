@@ -3,8 +3,8 @@ package com.site.meinsite.member.controller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -264,15 +264,19 @@ public class MemberController {
 	
 	//명함 캡처
 	@RequestMapping(value="capture.do", produces="MediaType.IMAGE_JPEG_VALUE")
-	public void camCapture(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String camId = request.getParameter("capScreen");
+	public void camCapture(HttpServletRequest request) throws IOException {
+		byte[] cam = request.getParameter("capScreen").getBytes();
+		InputStream in = request.getInputStream();
+		while(true) {
+			int result = in.read();
+			if(result == -1) {
+				break;
+			}
+		}
 		
-		String savePath = request.getSession().getServletContext().getRealPath("resources/namecard_img_files");
-		OutputStream out = response.getOutputStream();
-		out.
-		
-		
-		
+		String savePath=
+		OutputStream out = new FileOutputStream("")
+
 	}
 
 													
