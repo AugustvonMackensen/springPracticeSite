@@ -1,12 +1,17 @@
 package com.site.meinsite.member.controller;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -263,20 +268,15 @@ public class MemberController {
 	}
 	
 	//명함 캡처
-	@RequestMapping(value="capture.do", produces="MediaType.IMAGE_JPEG_VALUE")
-	public void camCapture(HttpServletRequest request) throws IOException {
-		byte[] cam = request.getParameter("capScreen").getBytes();
-		InputStream in = request.getInputStream();
-		while(true) {
-			int result = in.read();
-			if(result == -1) {
-				break;
-			}
-		}
-		
-		String savePath=
-		OutputStream out = new FileOutputStream("")
-
+	@RequestMapping("capture.do")
+	public void camCapture(HttpServletRequest request) throws Exception{
+		String savePath = request.getSession().getServletContext().getRealPath("resources/namecard_img_files/camFiles");
+		String fileName = "camCard";
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenRectangle = new Rectangle(screenSize);
+		Robot robot = new Robot();
+		BufferedImage image = robot.createScreenCapture(screenRectangle);
+		ImageIO.write(image, "jpg", new File(fileName));
 	}
 
 													

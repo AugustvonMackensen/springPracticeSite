@@ -6,24 +6,48 @@
 <head>
 <meta charset="UTF-8">
 <title></title>
-<style type="text/css">
-body{
-	margin: 50px;
-}
+ <link 
+      rel="stylesheet" 
+      href="https://pyscript.net/alpha/pyscript.css" 
+    /> 
+    <script 
+      defer 
+      src="https://pyscript.net/alpha/pyscript.js"
+    ></script> 
+    <py-env>         
+    - paths:
+      - "./resources/python/main.exe"
+    </py-env>
+    <py-config>
+      - autoclose_loader: true
+      - runtimes:
+        -
+          src: "https://cdn.jsdelivr.net/pyodide/dev/full/pyodide.js"
+          name: pyodide-0.20
+          lang: python
+    </py-config>
 
-</style>
-<script type="text/javascript" src="${ pageContext.servletContext.contextPath }/resources/js/jquery-3.6.1.min.js"></script>
-<script type="text/javascript">
-function capture(){
-	location.href="capture.do";
-}
-</script>
 </head>
 <body>
-<iframe id="capScreen" src="http://127.0.0.1:5000/stream?src=0" width="640" height="360" scrolling="no"></iframe>
-<button id="camCapture" name="camCapture" onclick="capture();">카메라 촬영하기</button><br>
-<form action="captureEnroll.do" method="post">
-<textarea id="extractedTxt" name="extractedTxt" rows="2" cols="30" readonly>${ usermail }</textarea>
-</form>
+<!-- 절대경로로 대상 파일의 위치를 지정한 경우 -->
+<c:import url="/WEB-INF/views/common/menubar.jsp" /> 
+<hr>
+<br>
+
+<py-script> 
+ import os 
+ 
+ os.system('./resources/python/main.exe')
+
+</py-script>
+<iframe src="http://localhost:5000/stream?src=0" width="650" height="480">
+</iframe>
+<br>
+
+<button onclick="javascript:location.href=capture.do;">사진 저장하기</button>
+
+<br>
+<hr>
+<c:import url="/WEB-INF/views/common/footer.jsp" />
 </body>
 </html>
