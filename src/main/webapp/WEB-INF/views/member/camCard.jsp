@@ -32,20 +32,31 @@
 <!-- 절대경로로 대상 파일의 위치를 지정한 경우 -->
 <c:import url="/WEB-INF/views/common/menubar.jsp" /> 
 <hr>
+<h1></h1>
 <br>
-
 <py-script> 
  import os 
- 
  os.system('./resources/python/main.exe')
-
 </py-script>
-<iframe src="http://localhost:5000/stream?src=0" width="650" height="480">
-</iframe>
+<img src="http://localhost:5000/stream?src=0" width="650" height="480" id="cam">
 <br>
+<canvas id="canvas" width="640" height="480"></canvas>
+<button id="snap" type="submit" name="upfile">캡처하기</button>&nbsp;&nbsp;&nbsp;
+<button onclick="javascript:location.href='uploadImage.do'">명함 등록페이지로 이동</button>
+<script>
+const video = document.getElementById('cam');
+const canvas = document.getElementById('canvas');
+const snap = document.getElementById('snap');
 
-<button onclick="javascript:location.href=capture.do;">사진 저장하기</button>
+		var context = canvas.getContext('2d');
+		var image = canvas.toDataURL();
+		snap.addEventListener("click", function(){
+		   context.drawImage(video, 0, 0, 640, 480);
+		   
+		});
 
+
+</script>
 <br>
 <hr>
 <c:import url="/WEB-INF/views/common/footer.jsp" />

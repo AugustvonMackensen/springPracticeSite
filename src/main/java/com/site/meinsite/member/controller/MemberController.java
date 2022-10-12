@@ -1,17 +1,11 @@
 package com.site.meinsite.member.controller;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -203,7 +197,7 @@ public class MemberController {
 	}
 	
 	//명함 회원가입
-	//2. 이미지로 업로드해서 이메일 데이터 추출
+	//이미지로 업로드해서 이메일 데이터 추출
 	@PostMapping("extractImgtoTxt.do")
 	public String extractImgtoTxt(@RequestParam("nameCardFile") MultipartFile mfile, Model model, 
 			HttpServletRequest request) throws Exception {
@@ -225,7 +219,7 @@ public class MemberController {
 				
 				String detectorFile = ocrPath + "\\" + "namecard_detector.py";
 				ProcessBuilder builder = new ProcessBuilder("python", detectorFile, 
-						ocrPath + "/ocrproject-363303-86c62cdc4683.json", savePath + "/namecard.jpg");
+						ocrPath + "/ocrstudent-45a0a578de07.json", savePath + "/namecard.jpg");
 				builder.redirectErrorStream(true);
 				System.out.println(builder.command());
 				Process p = builder.start();
@@ -267,18 +261,6 @@ public class MemberController {
 		return "member/cardEnrollPage";
 	}
 	
-	//명함 캡처
-	@RequestMapping("capture.do")
-	public void camCapture(HttpServletRequest request) throws Exception{
-		String savePath = request.getSession().getServletContext().getRealPath("resources/namecard_img_files/camFiles");
-		String fileName = "camCard";
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Rectangle screenRectangle = new Rectangle(screenSize);
-		Robot robot = new Robot();
-		BufferedImage image = robot.createScreenCapture(screenRectangle);
-		ImageIO.write(image, "jpg", new File(fileName));
-	}
-
 													
 	//아이디 찾기
 	@RequestMapping("idRecovery.do")

@@ -1,16 +1,13 @@
 package com.site.meinsite;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Handles requests for the application home page.
@@ -19,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
-	
+
 	@RequestMapping("main.do")
-	public String forwardMainView() throws IOException {
-		
-//		ProcessBuilder builder = new ProcessBuilder("C:\\card\\dist\\capture_card.exe");
-//		builder.start();
+	public String forwardMainView(HttpServletRequest request) throws IOException{
+		String camPath = request.getSession().getServletContext().getRealPath("/resources/python/main.exe");
+		ProcessBuilder builder = new ProcessBuilder(camPath);
+		builder.start();
 		return "common/main";	//내보낼 뷰파일명
 		
 	}
