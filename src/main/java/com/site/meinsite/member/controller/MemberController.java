@@ -217,8 +217,8 @@ public class MemberController {
 				
 				mfile.transferTo(renameFile);
 				
-				String detectorFile = ocrPath + "\\" + "namecard_detector.py";
-				ProcessBuilder builder = new ProcessBuilder("python", detectorFile, 
+				String detectorFile = ocrPath + "\\" + "namecard_detector.exe";
+				ProcessBuilder builder = new ProcessBuilder(detectorFile, 
 						ocrPath + "/ocrstudent-45a0a578de07.json", savePath + "/namecard.jpg");
 				builder.redirectErrorStream(true);
 				System.out.println(builder.command());
